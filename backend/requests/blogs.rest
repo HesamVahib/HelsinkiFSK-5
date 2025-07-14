@@ -1,0 +1,99 @@
+### Get all blogs
+GET http://localhost:3003/api/blogs
+
+###
+
+### Create a test blog post
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjY4NzIyMzQxZTFiMjFiZmU0NTk0YTc3MyIsImlhdCI6MTc1MjMxMDYwN30.6ue7FpnN6fEPXk6c4t_6R02xruM1LXJMFQmR9gsloK8
+
+{
+  "title": "Test Blog Post",
+  "author": "John Doe",
+  "url": "https://example.com/test-blog",
+  "likes": 5
+}
+
+###
+
+### Create another blog post
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjY4NzIyMzQxZTFiMjFiZmU0NTk0YTc3MyIsImlhdCI6MTc1MjMxMTE2NH0.af4O3rJMdrXarVRqHDzFIpxP9R0LWkFdBqCEkQFB3sE
+
+{
+  "title": "Another Blog Post",
+  "author": "Jane Smith",
+  "url": "https://example.com/another-blog",
+  "likes": 10
+}
+
+###
+
+### Create minimal blog
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+  "title": "Minimal Blog",
+  "author": "Test Author",
+  "url": "https://example.com/minimal"
+}
+
+###
+
+### Create my first blog
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+  "title": "My First Blog",
+  "author": "Your Name",
+  "url": "https://example.com/my-blog",
+  "likes": 32
+}
+
+###
+
+### Delete a specific blog (replace with actual ID)
+DELETE http://localhost:3003/api/blogs/686fcc898b2f23c46ae00c14
+
+### create a new user
+POST http://localhost:3003/api/users
+Content-Type: application/json
+
+{
+    "username": "root",
+    "name": "Root User",
+    "password": "salainen"
+}
+
+### create a new user with 2 chars
+POST http://localhost:3003/api/users
+Content-Type: application/json
+
+{
+    "username": "rt",
+    "name": "Root User",
+    "password": "salainen"
+}
+
+### login to get token
+POST http://localhost:3000/api/login
+Content-Type: application/json
+
+{
+    "username": "root",
+    "password": "salainen"
+}
+
+### Get all users
+GET http://localhost:3000/api/users
+
+### Delete a specific user (replace with actual ID)
+@userId = 687221c90cca7547ccb1e8a9
+DELETE http://localhost:3003/api/users/{{userId}}
+
+### login to get token
+POST http://localhost:3000/api/login
