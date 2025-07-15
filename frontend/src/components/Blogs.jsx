@@ -97,12 +97,6 @@ const Blogs = ({ setBlogs, blog, user }) => {
   );
 };
 
-Blogs.propTypes = {
-  setBlogs: PropTypes.func.isRequired,
-  blog: PropTypes.object.isRequired,
-  user: PropTypes.object.isRequired,
-};
-
 const SortBlogs = ({ setBlogs, blogs, user }) => {
 
   const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes);
@@ -121,4 +115,4 @@ Blogs.propTypes = {
   blog: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired
 }
-export default SortBlogs
+export {Blogs, SortBlogs };
