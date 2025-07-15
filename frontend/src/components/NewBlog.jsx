@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
 import { Display } from './Display';
 
- const CreateBlogForm = ({buttonFormToggle, handleNewBlog, visible}) => {
+ const CreateBlogForm = ({handleNewBlog, visible}) => {
   
     return ( visible ? (
       <form onSubmit={handleNewBlog}>
@@ -18,7 +17,7 @@ import { Display } from './Display';
           url: 
           <input type="text" name="url" />
         </div>
-        <button type="submit" onSubmit={buttonFormToggle}>create</button>
+        <button type="submit">create</button>
       </form>
     ) : null)
   }

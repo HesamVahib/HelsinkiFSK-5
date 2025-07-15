@@ -1,23 +1,8 @@
-import Blogs from './components/Blogs'
 import { Display, ErrorDisplay } from './components/Display'
 import { useState, useEffect } from 'react'
 import CreateBlogForm from './components/NewBlog'
+import SortBlogs from './components/Blogs';
 
-
-
-const fetchedBlogs = async () => {
-  try {
-    const response = await fetch('/api/blogs');
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Error fetching blogs:', error);
-    return [];
-  }
-};
 
 const App = () => {
 
@@ -41,10 +26,22 @@ const App = () => {
         console.error('Error parsing logged user:', error);
       }
     }
-    fetchedBlogs().then(blogs => {
+    const fetchBlogs = async () => {
+    try {
+      const response = await fetch('/api/blogs');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching blogs:', error);
+      return [];
+    }
+  };
+    fetchBlogs().then(blogs => {
       setBlogs(blogs);
     });
-
   }, []);
 
   const handleLogin = async (event) => {
@@ -173,11 +170,13 @@ const App = () => {
     setVisible(false);
   }
 
-  const buttonFormToggle = (
-    <button onClick={() => setVisible(!visible)}>
-      {visible ? 'cancel' : 'new blog'}
-    </button>
-  )
+  const buttonFormToggle = () => {
+    return (
+      <button onClick={() => setVisible(!visible)}>
+        {visible ? 'cancel' : 'new blog'}
+      </button>
+    )
+  }
 
   const blogPost = () => {
     return (
@@ -187,11 +186,9 @@ const App = () => {
       <Display tag="p">
         {user.username} logged in {logoutButton()}
       </Display>
-      <CreateBlogForm handleNewBlog={handleNewBlog} buttonFormToggle={buttonFormToggle} visible={visible} /> 
-      {buttonFormToggle}
-      {updatedBlog.map((updatedBlog) => (
-        <Blogs key={updatedBlog.id} blog={updatedBlog} />
-      ))}
+      <CreateBlogForm handleNewBlog={handleNewBlog} visible={visible} /> 
+      {buttonFormToggle()}
+      <SortBlogs setBlogs={setBlogs} blogs={updatedBlog} user={user} />
     </div>
   )
   }

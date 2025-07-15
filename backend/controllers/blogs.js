@@ -1,4 +1,5 @@
 const blogsRouter = require('express').Router()
+const blog = require('../models/blog')
 const Blog = require('../models/blog')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
@@ -14,6 +15,25 @@ blogsRouter.get('/', async (request, response) => {
     return response.status(404).json({ error: 'No blogs found' })
   }
   return response.status(200).json(blogs)
+})
+
+blogsRouter.get('/:id', async (request, response) => {
+  const blog = await Blog.findById(request.params.id).populate('user', {
+    username: 1,
+    name: 1
+  })
+  if (!blog) {
+    return response.status(404).json({ error: 'Blog not found' })
+  }
+  return response.status(200).json(blog)
+})
+
+blogsRouter.get('/:id/likes', async (request, response) => {
+  const blog = await Blog.findById(request.params.id)
+  if (!blog) {
+    return response.status(404).json({ error: 'Blog not found' })
+  }
+  return response.status(200).json(blog.likes)
 })
 
 blogsRouter.post('/', async (request, response) => {
@@ -62,6 +82,19 @@ blogsRouter.put('/:id', async (request, response) => {
     return response.status(404).json({ error: 'Blog not found' })
   }
   response.status(200).json(result)
+})
+
+blogsRouter.put('/:id/likes', async (request, response) => {
+  const blogId = request.params.id
+  const blog = await Blog.findById(blogId)
+  console.log(blog)
+
+  if (!blog) {
+    return response.status(404).json({ error: 'Blog not found' })
+  }
+  blog.likes += 1
+  const updatedBlog = await blog.save()
+  response.status(200).json(updatedBlog)
 })
     
   
