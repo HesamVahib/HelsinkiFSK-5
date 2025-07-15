@@ -1,6 +1,8 @@
 import Blogs from './components/Blogs'
 import { Display, ErrorDisplay } from './components/Display'
 import { useState, useEffect } from 'react'
+import CreateBlogForm from './components/NewBlog'
+
 
 
 const fetchedBlogs = async () => {
@@ -25,6 +27,7 @@ const App = () => {
   const [username, setUsername] = useState('');
   const [updatedBlog, setBlogs] = useState([]);
   const [error, setError] = useState(null);
+  const [visible, setVisible] = useState(false);
 
   
 
@@ -46,6 +49,7 @@ const App = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault();
+
     if (!username || !password) {
       setError('Username and password are required');
       setTimeout(() => {
@@ -124,45 +128,56 @@ const App = () => {
     )
   }
 
+  const addBlog = async (newBlog) => {
+
+      try {
+        const response = await fetch('/api/blogs', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${user.token}`
+          },
+          body: JSON.stringify(newBlog)
+        })
+        
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || 'Failed to add blog');
+        }
+        
+        const savedBlog = await response.json();
+        setBlogs([...updatedBlog, savedBlog]);
+        setError(`a new blog ${savedBlog.title} by ${savedBlog.author} added`)
+        } catch (error) {
+          console.error('Error adding blog:', error);
+          setError(error.message);
+        }
+    }
+
   const handleNewBlog = (event) => {
     event.preventDefault();
     const newBlog = {
-      id: updatedBlog.length + 1,
       title: event.target.title.value,
       author: event.target.author.value,
       url: event.target.url.value
     };
-    setBlogs([...updatedBlog, newBlog]);
-    setError(`a new blog ${newBlog.title} by ${newBlog.author} added`);
+    
+    addBlog(newBlog);
+    
     setTimeout(() => {
       setError(null);
     }, 5000);
     event.target.title.value = '';
     event.target.author.value = '';
     event.target.url.value = '';
+    setVisible(false);
   }
 
- const CreateBlogForm = () => {
-  
-    return (
-      <form onSubmit={handleNewBlog}>
-        <Display tag="h2" text="Create new" />
-        <div>
-          title:
-          <input type="text" name="title" />
-        </div>
-        <div>
-          author: 
-          <input type="text" name="author" />
-        </div>
-        <div>
-          url: 
-          <input type="text" name="url" />
-        </div>
-        <button type="submit">create</button>
-      </form>
-    )
-  }
+  const buttonFormToggle = (
+    <button onClick={() => setVisible(!visible)}>
+      {visible ? 'cancel' : 'new blog'}
+    </button>
+  )
 
   const blogPost = () => {
     return (
@@ -172,7 +187,8 @@ const App = () => {
       <Display tag="p">
         {user.username} logged in {logoutButton()}
       </Display>
-      <CreateBlogForm />
+      <CreateBlogForm handleNewBlog={handleNewBlog} buttonFormToggle={buttonFormToggle} visible={visible} /> 
+      {buttonFormToggle}
       {updatedBlog.map((updatedBlog) => (
         <Blogs key={updatedBlog.id} blog={updatedBlog} />
       ))}
