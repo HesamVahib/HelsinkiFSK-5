@@ -1,4 +1,5 @@
 const blogsRouter = require('express').Router()
+const blog = require('../models/blog')
 const Blog = require('../models/blog')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
@@ -14,6 +15,14 @@ blogsRouter.get('/', async (request, response) => {
     return response.status(404).json({ error: 'No blogs found' })
   }
   return response.status(200).json(blogs)
+})
+
+blogsRouter.get('/deleteMany', async (request, response) => {
+  const result = await Blog.deleteMany({})
+  if (result.deletedCount === 0) {
+    return response.status(404).json({ error: 'No blogs to delete' })
+  }
+  return response.status(200).json({ message: 'All blogs deleted successfully' })
 })
 
 blogsRouter.get('/:id', async (request, response) => {
@@ -64,7 +73,15 @@ blogsRouter.post('/', async (request, response) => {
   user.blogs = user.blogs.concat(savedBlog._id)
   await user.save()
 
-  response.status(201).json(savedBlog)
+  const populatedBlog = await Blog.findById(savedBlog._id).populate('user', {
+    username: 1,
+    name: 1
+  })
+
+  if (!populatedBlog) {
+    return response.status(404).json({ error: 'Blog not found after saving' })
+  }
+  return response.status(201).json(populatedBlog)
 })
 
 blogsRouter.delete('/:id', async (request, response) => {

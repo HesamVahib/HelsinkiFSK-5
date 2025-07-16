@@ -69,6 +69,16 @@ Content-Type: application/json
     "password": "salainen"
 }
 
+### create another new user
+POST http://localhost:3000/api/users
+Content-Type: application/json
+
+{
+    "username": "hesam",
+    "name": "hessi",
+    "password": "123"
+}
+
 ### create a new user with 2 chars
 POST http://localhost:3003/api/users
 Content-Type: application/json

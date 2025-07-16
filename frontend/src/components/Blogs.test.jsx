@@ -1,8 +1,11 @@
 import {render, screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {Blogs} from './Blogs';
+import { vi } from 'vitest';
 
-test ('renders blog title and author', async () => {
+global.fetch = vi.fn();
+
+test ('renders blog title and author and likes increase by clicking', async () => {
   const blog = {
     id: 1,
     title: 'Test Blog',
@@ -13,21 +16,32 @@ test ('renders blog title and author', async () => {
         token: 'test-token' }
     };
 
-    render(<Blogs blog={blog} user={blog.user} setBlogs={() => {}} />);
+    fetch
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ likes: 6 })
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ likes: 7 })
+      });
 
-    // Initially, details should be hidden
-    expect(screen.queryByText('http://test.com')).toBeNull();
-    expect(screen.queryByText(/5 likes/)).toBeNull();
+    render(<Blogs blog={blog} user={blog.user} setBlogs={() => {}} />);
 
     const user = userEvent.setup();
     const button1 = screen.getByText('view');
     await user.click(button1);
 
-    // After clicking, button text should change to 'hide'
-    expect(screen.getByText('hide')).toBeDefined();
+    expect(screen.getByText(/5 likes/)).toBeDefined();
 
+    const likeButton = screen.getByText('like');
+    
+    await user.click(likeButton);
+    expect(screen.getByText(/6 likes/)).toBeDefined();
+    
+    await user.click(likeButton);
+    expect(screen.getByText(/7 likes/)).toBeDefined();
 
     const element = screen.getByText('Test Blog Test Author');
-    // screen.debug(element);
     expect(element).toBeDefined();
 })

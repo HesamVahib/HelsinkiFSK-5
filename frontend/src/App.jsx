@@ -1,7 +1,7 @@
 import { Display, ErrorDisplay } from './components/Display'
 import { useState, useEffect } from 'react'
 import CreateBlogForm from './components/NewBlog'
-import SortBlogs from './components/Blogs';
+import { SortBlogs } from './components/Blogs';
 
 
 const App = () => {
@@ -71,7 +71,6 @@ const App = () => {
       }
 
       const user = await response.json();
-      console.log('user', user);
       setUser(user);
       setUsername('');
       setPassword('');
@@ -90,7 +89,7 @@ const App = () => {
       <div>
       <Display tag="h2" text="Log in to application" />
       {error && <ErrorDisplay color="red" message={error} />}
-      <form onSubmit={handleLogin}>
+      <form onSubmit={handleLogin} name="login form">
           <div>
           username
           <input
@@ -98,6 +97,7 @@ const App = () => {
               value={username}
               name="Username"
               onChange={({ target }) => setUsername(target.value)}
+              placeholder='username'
           />
           </div>
           <div>
@@ -107,6 +107,7 @@ const App = () => {
               value={password}
               name="Password"
               onChange={({ target }) => setPassword(target.value)}
+              placeholder='password'
           />
           </div>
           <button type="submit">login</button>
@@ -141,7 +142,7 @@ const App = () => {
           const error = await response.json();
           throw new Error(error.error || 'Failed to add blog');
         }
-        
+
         const savedBlog = await response.json();
         setBlogs([...updatedBlog, savedBlog]);
         setError(`a new blog ${savedBlog.title} by ${savedBlog.author} added`)
@@ -156,7 +157,7 @@ const App = () => {
     const newBlog = {
       title: event.target.title.value,
       author: event.target.author.value,
-      url: event.target.url.value
+      url: event.target.url.value,
     };
     
     addBlog(newBlog);

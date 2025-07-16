@@ -3,8 +3,11 @@ import PropTypes from "prop-types";
 
 
 const Blogs = ({ setBlogs, blog, user }) => {
+
   const [detailsVisible, setDetailsVisible] = useState(false);
   const [likes, setLikes] = useState(blog.likes);
+
+  const isCreator = blog.user && user && blog.user.username === user.username;
 
   const blogStyle = {
     paddingTop: 10,
@@ -15,7 +18,7 @@ const Blogs = ({ setBlogs, blog, user }) => {
   };
 
   const toggleDetails = () => (
-    <button onClick={() => setDetailsVisible(!detailsVisible)}>
+    <button onClick={() => setDetailsVisible(!detailsVisible)} name="view">
       {detailsVisible ? 'hide' : 'view'}
     </button>
   );
@@ -74,14 +77,14 @@ const Blogs = ({ setBlogs, blog, user }) => {
     };
 
     return (
-      <button onClick={handleDelete} style={deleteButtonStyle}>
+      <button onClick={handleDelete} style={deleteButtonStyle} name="remove">
         remove
       </button>
     );
   };
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className="blog">
       {blog.title} {blog.author} {toggleDetails()}
       {detailsVisible && (
         <div>
@@ -90,7 +93,7 @@ const Blogs = ({ setBlogs, blog, user }) => {
             {likes} likes {likeButton(blog.id)}
           </div>
           <div>added by {blog.user.name}</div>
-          {deleteButton(blog.id)}
+          {isCreator ? deleteButton(blog.id) : null}
         </div>
       )}
     </div>
